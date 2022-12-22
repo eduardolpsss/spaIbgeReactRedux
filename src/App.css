@@ -14,10 +14,11 @@ body {
 
 h1 {
   font-size: 32px;
+  margin: 35px 0px 35px 0px;
 }
 
 .container {
-  height: 70vh;
+  height: 30vh;
   width: 70vw;
   border-radius: 16px;
   border: 1px solid black;
