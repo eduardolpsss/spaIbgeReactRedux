@@ -1,91 +1,32 @@
-import { ChangeEvent, useEffect, useState } from 'react'
-import axios from 'Axios'
-import { Box, Container, FormControl, Select, Typography, Card, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel } from '@mui/material'
+import { useState } from 'react'
+import { Box, Container, FormControl, Select, Typography, Card, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from '@mui/material'
 import './App.css'
+import { useEstados } from './hooks/useEstados'
+import { useMunicipios } from './hooks/useMunicipios'
+import { useSelectedMunicipioInfo } from './hooks/useSelectedMunicipioInfo'
 
-type IBGEEstadoResponse = {
-  id: number
-  sigla: string
-  nome: string
-}
+export default function App() {
+  const {estados} = useEstados();
+  const [selectedEstado, setSelectedEstado] = useState('');
+  const [selectedMunicipio, setSelectedMunicipio] = useState('');
+  const {municipios, loading: loadingMunicipos} = useMunicipios({ uf: selectedEstado });
+  const [selectedMunicipioInfo, setSelectedMunicipioInfo] = useState('');
+  const { municipioInfo } = useSelectedMunicipioInfo({ id: selectedMunicipio });
 
-type IBGEEMunicipioResponse = {
-  id: number
-  nome: string
-  municipio: []
-}
+  const handleEstadoUpdate = (event) => {
+    setSelectedEstado(event.target.value);
+  };
 
-type IBGEEMunicipioInfoResponse = {
-  id: number
-  nome: string
-  microrregiao: {
-    id: number
-    nome: string
-    mesorregiao: {
-      id: number
-      nome: string
-      UF: {
-        id: number
-        sigla: string
-        nome: string
-        regiao: {
-          id: number
-          sigla: string
-          nome: string
-        }
-      }
-    }
-  }
-  municipioInfo: []
-}
+  const handleMunicipioUpdate = (event) => {
+    setSelectedMunicipio(event.target.value);
 
-function App() {
+    handleSelectedMunicipioInfoUpdate(event.target.value)
+    console.log('[handleMuncipioUpdate]'+event.target.value)
+  };
 
-  const [estados, setEstados] = useState<IBGEEstadoResponse[]>([])
-  const [municipios, setMunicipios] = useState<IBGEEMunicipioResponse[]>([])
-  const [municipioInfo, setMunicipioInfo] = useState<IBGEEMunicipioInfoResponse[]>([])
-  const [estadoSelecionado, setEstadoSelecionado] = useState('')
-  const [municipioSelecionado, setMunicipioSelecionado] = useState('')
-
-  useEffect(() => {
-    // Fazendo GET na API de estados disponibilizada pelo IBGE e carregando os dados na varável
-    axios
-    .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-    .then((response) => {
-      setEstados(response.data)
-    })  
-  }, [])
-
-  useEffect(() => {
-    // Fazendo GET na API de municípios disponibilizada pelo IBGE e carregando os dados na varável
-    axios
-    .get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSelecionado}/municipios`)
-    .then((response) => {
-      setMunicipios(response.data)
-    })  
-  }, [estadoSelecionado])
-
-  useEffect(() => {
-    municipioSelecionado != '' ? axios
-    .get(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${municipioSelecionado}`)
-    .then((response) => {
-      setMunicipioInfo(response.data)
-    }) : console.log('Ótimo, você não selecionou um município')
-  }, [municipioSelecionado])
-
-  // Função para tratamento do estado selecionado no primeiro select
-  function handleEstadoSelecionado(event: ChangeEvent<HTMLSelectElement>) {
-    const estado = event.target.value
-    setEstadoSelecionado(estado)
-    console.log('Estado selecionado: '+estado)
-  }
-
-  // Função para tratamento do municipio selecionado no primeiro select
-  function handleMunicipioSelecionado(event: ChangeEvent<HTMLSelectElement>) {
-    const municipio = event.target.value
-    setMunicipioSelecionado(municipio)
-    console.log('Municipio selecioando: '+municipio)
-  }
+  const handleSelectedMunicipioInfoUpdate = (selectedMunicipio) => {
+    setSelectedMunicipioInfo(selectedMunicipio);
+  };
 
   return (
     <>
@@ -94,85 +35,82 @@ function App() {
       </h1>
 
       <div className="container">
-        <select name='estado' id='estado' value={estadoSelecionado} onChange={handleEstadoSelecionado}>
+        <select value={selectedEstado} onChange={handleEstadoUpdate}>
           <option value="">Selecione o estado</option>
           {estados.map((estado) => (
-            <option key={estado.id} value={estado.sigla}>
-              {estado.nome}
-            </option>
+            <option key={estado.id} value={estado.sigla}>{estado.nome}</option>
           ))}
         </select>
 
-        <select name='municipio' id='municipio' value={municipioSelecionado} onChange={handleMunicipioSelecionado}>
-          <option value="">Selecione o município</option>
-          {municipios.map((municipio) => (
-            <option key={municipio.id} value={municipio.id}>
-              {municipio.nome}
-            </option>
-          ))}
-        </select>
+        {loadingMunicipos ? (<Typography>Carregando...</Typography>) : (
+          <select value={selectedMunicipio} onChange={handleMunicipioUpdate}>
+            <option>Selecione o municipio</option>
+            {municipios.map((municipio) => (
+              <option key={municipio.id} value={municipio.id}>{municipio.nome}</option>
+            ))}
+          </select>
+        )}
       </div>
 
+      <h1>
+        Informações do município selecionado
+      </h1>
 
-      {municipioSelecionado != '' ? (
-        
-        <TableContainer component={Paper} sx={{mt: 3}}>
-        <Table sx={{minWidth: 659}} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              {/* <TableCell align='center'>
-                Sigla do estado selecionado
-              </TableCell> */}
-              <TableCell align='center'>
-                ID do município
-              </TableCell>
-              <TableCell align='center'>
-                Nome do município
-              </TableCell>
-              <TableCell align='center'>
-                Microrregião
-              </TableCell>
-              <TableCell align='center'>
-                Mesorregião
-              </TableCell>
-              <TableCell align='center'>
-                UF
-              </TableCell>
-              <TableCell align='center'>
-                Região  
-              </TableCell>
-            </TableRow>
-          </TableHead>
+      {selectedMunicipio != '' ? (
+        <div className="container">
+          <TableContainer component={Paper} sx={{mt: 5}}>
+            <Table sx={{minWidth: 659}} aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell align='center'>ID</TableCell>
+                  <TableCell align='center'>Nome</TableCell>
+                  <TableCell align='center'>Microrregião</TableCell>
+                  <TableCell align='center'>Mesorregião</TableCell>
+                  <TableCell align='center'>UF</TableCell>
+                  <TableCell align='center'>Região</TableCell>
+                </TableRow>
+              </TableHead> 
+              <TableBody>
+                <TableRow>
+                  <TableCell align='center'>{municipioInfo.id}</TableCell>
+                  <TableCell align='center'>{municipioInfo.nome}</TableCell>
+                  {/* <TableCell align='center'>{municipioInfo.microrregiao.nome}</TableCell>
+                  <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.nome}</TableCell>
+                  <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.UF.sigla}</TableCell>
+                  <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.UF.regiao.nome}</TableCell> */}
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      ) : (
+        <div className="container">
+          <TableContainer component={Paper} sx={{mt: 3}}>
+            <Table sx={{minWidth: 659}} aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell align='center'>ID</TableCell>
+                  <TableCell align='center'>Nome</TableCell>
+                  <TableCell align='center'>Microrregião</TableCell>
+                  <TableCell align='center'>Mesorregião</TableCell>
+                  <TableCell align='center'>UF</TableCell>
+                  <TableCell align='center'>Região</TableCell>
+                </TableRow>
+              </TableHead> 
 
-          <TableBody>
-            <TableRow>
-              {/* <TableCell align='center'>
-                {estadoSelecionado}
-              </TableCell> */}
-              <TableCell align='center'>
-                {municipioInfo.id}
-              </TableCell>
-              <TableCell align='center'>
-                {municipioInfo.nome}
-              </TableCell>
-              <TableCell align='center'>
-                
-              </TableCell>
-              <TableCell align='center'>
-                
-              </TableCell>
-              <TableCell align='center'>
-                {estadoSelecionado}
-              </TableCell>
-              <TableCell align='center'>
-                
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>) : ''}
+              <TableBody>
+                <TableRow>
+                  <TableCell align='center' colSpan={6}>
+                    Selecione um município
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
+
+      
     </>
   )
 }
-
-export default App
