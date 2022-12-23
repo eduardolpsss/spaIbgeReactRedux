@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Box, Container, FormControl, Select, Typography, Card, AppBar, Toolbar, CssBaseline, useScrollTrigger, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from '@mui/material'
-// import './App.css'
 import { useEstados } from './hooks/useEstados'
 import { useMunicipios } from './hooks/useMunicipios'
 import { useSelectedMunicipioInfo } from './hooks/useSelectedMunicipioInfo'
