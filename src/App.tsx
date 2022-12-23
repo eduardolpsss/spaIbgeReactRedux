@@ -19,14 +19,7 @@ export default function App() {
 
   const handleMunicipioUpdate = (event) => {
     setSelectedMunicipio(event.target.value);
-
-    // handleSelectedMunicipioInfoUpdate(event.target.value)
-    // console.log('[handleMuncipioUpdate]'+event.target.value)
   };
-
-  // const handleSelectedMunicipioInfoUpdate = (selectedMunicipio) => {
-  //   setSelectedMunicipioInfo(selectedMunicipio);
-  // };
 
   return (
     <>
