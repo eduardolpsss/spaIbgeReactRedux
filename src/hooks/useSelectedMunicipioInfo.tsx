@@ -67,7 +67,6 @@ export const useSelectedMunicipioInfo = ({ id }) => {
                 .then(response => response.json())
                 .then(data => {
                     setMunicipioInfo(data);
-                    console.log(data)
                 });
         } return
     }, [id]);
