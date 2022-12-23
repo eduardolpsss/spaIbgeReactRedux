@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Box, Container, FormControl, Select, Typography, Card, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from '@mui/material'
-import './App.css'
+import { Box, Container, FormControl, Select, Typography, Card, AppBar, Toolbar, CssBaseline, useScrollTrigger, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from '@mui/material'
+// import './App.css'
 import { useEstados } from './hooks/useEstados'
 import { useMunicipios } from './hooks/useMunicipios'
 import { useSelectedMunicipioInfo } from './hooks/useSelectedMunicipioInfo'
+import ButtonAppBar from './components/NavBar'
 
 export default function App() {
   const {estados} = useEstados();
@@ -23,31 +24,62 @@ export default function App() {
 
   return (
     <>
-      <h1>
+      <ButtonAppBar />
+
+      <Typography variant="h4" gutterBottom m={3}>
         Seletor de estados e municípios
-      </h1>
+      </Typography>
 
-      <div className="container">
-        <select value={selectedEstado} onChange={handleEstadoUpdate}>
-          <option value="">Selecione o estado</option>
-          {estados.map((estado) => (
-            <option key={estado.id} value={estado.sigla}>{estado.nome}</option>
-          ))}
-        </select>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Box
+            sx={{mb: 2.5}}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Selecione o estado</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Selecione o estado"
+                value={selectedEstado}
+                onChange={handleEstadoUpdate}
+              >
+                <MenuItem value="">Selecione o estado</MenuItem>
+                {estados.map((estado) => (
+                  <MenuItem key={estado.id} value={estado.sigla}>{estado.nome}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        </Grid>
+        <Grid item xs={6}>
+          <Box
+            sx={{mb: 2.5}}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Selecione o municipio</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Selecione o municipio"
+                value={selectedMunicipio}
+                onChange={handleMunicipioUpdate}
+              >
+              <MenuItem>Selecione o municipio</MenuItem>
+              {municipios.map((municipio) => (
+                <MenuItem key={municipio.id} value={municipio.id}>{municipio.nome}</MenuItem>
+              ))}
+              </Select>
+            </FormControl>
+          </Box>
+        </Grid>
+      </Grid>
 
-        {loadingMunicipos ? (<Typography>Carregando...</Typography>) : (
-          <select value={selectedMunicipio} onChange={handleMunicipioUpdate}>
-            <option>Selecione o municipio</option>
-            {municipios.map((municipio) => (
-              <option key={municipio.id} value={municipio.id}>{municipio.nome}</option>
-            ))}
-          </select>
-        )}
-      </div>
 
-      <h1>
-        Informações do município selecionado
-      </h1>
+
+      <Typography variant="h4" gutterBottom m={3}>
+        Informações do município
+      </Typography>
 
       {municipioInfo != '' ? (
         <div className="container">
@@ -59,7 +91,7 @@ export default function App() {
                   <TableCell align='center'>Nome</TableCell>
                   <TableCell align='center'>Microrregião</TableCell>
                   <TableCell align='center'>Mesorregião</TableCell>
-                  <TableCell align='center'>UF</TableCell>
+                  <TableCell align='center'>UF (sigla)</TableCell>
                   <TableCell align='center'>Região</TableCell>
                 </TableRow>
               </TableHead> 
@@ -86,7 +118,7 @@ export default function App() {
                   <TableCell align='center'>Nome</TableCell>
                   <TableCell align='center'>Microrregião</TableCell>
                   <TableCell align='center'>Mesorregião</TableCell>
-                  <TableCell align='center'>UF</TableCell>
+                  <TableCell align='center'>UF (sigla)</TableCell>
                   <TableCell align='center'>Região</TableCell>
                 </TableRow>
               </TableHead> 
