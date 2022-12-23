@@ -1,5 +1,21 @@
 import { useState } from 'react'
-import { Box, Container, FormControl, Select, Typography, Card, AppBar, Toolbar, CssBaseline, useScrollTrigger, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from '@mui/material'
+import { 
+  Box,
+  Container,
+  FormControl,
+  Select, 
+  Typography, 
+  Grid, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  InputLabel, 
+  MenuItem 
+} from '@mui/material'
 import { useEstados } from './hooks/useEstados'
 import { useMunicipios } from './hooks/useMunicipios'
 import { useSelectedMunicipioInfo } from './hooks/useSelectedMunicipioInfo'
@@ -52,25 +68,47 @@ export default function App() {
           </Box>
         </Grid>
         <Grid item xs={6}>
-          <Box
+          {selectedEstado != '' ? 
+          
+          (
+            <Box
             sx={{mb: 2.5}}
-          >
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Selecione o municipio</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Selecione o municipio"
-                value={selectedMunicipio}
-                onChange={handleMunicipioUpdate}
+            >
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Selecione o municipio</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Selecione o municipio"
+                  value={selectedMunicipio}
+                  onChange={handleMunicipioUpdate}
+                >
+                <MenuItem>Selecione o municipio</MenuItem>
+                {municipios.map((municipio) => (
+                  <MenuItem key={municipio.id} value={municipio.id}>{municipio.nome}</MenuItem>
+                ))}
+                </Select>
+              </FormControl>
+            </Box>
+          
+          ) 
+          : 
+          ( 
+          
+              <Box
+                sx={{mb: 2.5}}
               >
-              <MenuItem>Selecione o municipio</MenuItem>
-              {municipios.map((municipio) => (
-                <MenuItem key={municipio.id} value={municipio.id}>{municipio.nome}</MenuItem>
-              ))}
-              </Select>
-            </FormControl>
-          </Box>
+                <FormControl fullWidth disabled>
+                  <InputLabel id="demo-simple-select-label">Selecione o municipio</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Selecione o municipio"
+                  >
+                  </Select>
+                </FormControl>
+              </Box>
+          )}
         </Grid>
       </Grid>
 
@@ -133,8 +171,6 @@ export default function App() {
           </TableContainer>
         </div>
       )}
-
-      
     </>
   )
 }
