@@ -20,13 +20,13 @@ export default function App() {
   const handleMunicipioUpdate = (event) => {
     setSelectedMunicipio(event.target.value);
 
-    handleSelectedMunicipioInfoUpdate(event.target.value)
-    console.log('[handleMuncipioUpdate]'+event.target.value)
+    // handleSelectedMunicipioInfoUpdate(event.target.value)
+    // console.log('[handleMuncipioUpdate]'+event.target.value)
   };
 
-  const handleSelectedMunicipioInfoUpdate = (selectedMunicipio) => {
-    setSelectedMunicipioInfo(selectedMunicipio);
-  };
+  // const handleSelectedMunicipioInfoUpdate = (selectedMunicipio) => {
+  //   setSelectedMunicipioInfo(selectedMunicipio);
+  // };
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function App() {
         Informações do município selecionado
       </h1>
 
-      {selectedMunicipio != '' ? (
+      {municipioInfo != '' ? (
         <div className="container">
           <TableContainer component={Paper} sx={{mt: 5}}>
             <Table sx={{minWidth: 659}} aria-label='simple table'>
@@ -74,10 +74,10 @@ export default function App() {
                 <TableRow>
                   <TableCell align='center'>{municipioInfo.id}</TableCell>
                   <TableCell align='center'>{municipioInfo.nome}</TableCell>
-                  {/* <TableCell align='center'>{municipioInfo.microrregiao.nome}</TableCell>
+                  <TableCell align='center'>{municipioInfo.microrregiao.nome}</TableCell>
                   <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.nome}</TableCell>
                   <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.UF.sigla}</TableCell>
-                  <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.UF.regiao.nome}</TableCell> */}
+                  <TableCell align='center'>{municipioInfo.microrregiao.mesorregiao.UF.regiao.nome}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
