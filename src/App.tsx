@@ -20,6 +20,7 @@ import { useEstados } from './hooks/useEstados'
 import { useMunicipios } from './hooks/useMunicipios'
 import { useSelectedMunicipioInfo } from './hooks/useSelectedMunicipioInfo'
 import ButtonAppBar from './components/NavBar'
+import Footer from './components/Footer'
 
 export default function App() {
   const {estados} = useEstados();
@@ -112,8 +113,6 @@ export default function App() {
         </Grid>
       </Grid>
 
-
-
       <Typography variant="h4" gutterBottom m={3}>
         Informações do município
       </Typography>
@@ -171,6 +170,8 @@ export default function App() {
           </TableContainer>
         </div>
       )}
+
+      <Footer />
     </>
   )
 }
