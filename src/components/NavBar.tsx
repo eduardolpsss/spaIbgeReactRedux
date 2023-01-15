@@ -12,9 +12,9 @@ export default function ButtonAppBar() {
             sx={{ bgcolor: '#4c8eca'}}
         >
             <Toolbar>
-                {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     spaIbgeReactRedux
-                </Typography> */}
+                </Typography>
                 <Typography
                 variant="h6"
                 noWrap
@@ -30,7 +30,6 @@ export default function ButtonAppBar() {
                 textDecoration: 'none',
                 }}
             >
-                spaIbgeReactRedux
             </Typography>
             </Toolbar>
       </AppBar>
