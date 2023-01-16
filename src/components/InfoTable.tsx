@@ -14,7 +14,7 @@ export default function InfoTable (props: any) {
   return (
     <div style={{ marginTop: 20 }}>
       <Typography variant="h5" gutterBottom m={3}>
-        Informações do município selecionado
+        Informações do município {props.selectedMunicipioNome}
       </Typography>
 
       <TableContainer component={Paper}>
