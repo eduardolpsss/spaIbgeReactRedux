@@ -3,7 +3,12 @@ import {
   Container, 
   Typography, 
   Paper, 
+  IconButton,
 } from '@mui/material'
+
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function Footer() {
   return (
@@ -15,15 +20,39 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Box
           sx={{
-            flexGrow: 1,
-            justifyContent: "center",
-            display: "flex",
-            mb: 2,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            m: 1
           }}
         >
-          <Typography variant="caption" color="initial">
+          <Typography variant="body2" color="grey">
             Feito por Eduardo Pontes
           </Typography>
+
+          <IconButton
+            href="https://eduardopontes.netlify.app/"
+            target={"_blank"}
+            sx={{ ml: 1, color: 'grey'}}
+          >
+            <AccountCircleIcon />
+          </IconButton>
+
+          <IconButton
+            href="https://www.linkedin.com/in/eduardolpsss/"
+            target={"_blank"}
+            sx={{ ml: 0.5, color: 'grey'}}
+          >
+            <LinkedInIcon />
+          </IconButton>
+
+          <IconButton
+            href="https://github.com/eduardolpsss/spaIbgeReactRedux"
+            target={"_blank"}
+            sx={{ ml: 0.5, color: 'grey' }}
+          >
+            <GitHubIcon />
+          </IconButton>
         </Box>
       </Container>
     </Paper>

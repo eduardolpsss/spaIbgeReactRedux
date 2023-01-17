@@ -1,58 +1,47 @@
+import React, { useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../redux/types/reduxTypes';
+import { IMunicipios } from '../types';
 import Select from "react-select";
-import { useMunicipios } from "../hooks/useMunicipios";
-import { SelectHTMLAttributes, useState } from "react";
-import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputLabel, MenuItem } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { infoFetch } from '../redux/slices/municipiosInfoSlice';
 
-import InfoTable from "./InfoTable";
+export default function SelectMunicipio () {
+  const dispatch = useAppDispatch();
+	const { status } = useAppSelector((state) => state.municipios);
+	const { municipios } = useAppSelector((state) => state.municipios);
+	const [selectedMunicipio, setSelectedMunicipio] = useState<IMunicipios>()
+	const [query, setQuery] = useState('')
 
-export const SelectMunicipio = ({ uf }: { uf: string }) => {
-  const [selectedMunicipioId, setSelectedMunicipioId] = useState<number | null>(null);
-  const [selectedMunicipioNome, setSelectedMunicipioNome ] = useState<string | undefined>(undefined);
-  const [selectedMunicipioUf, setSelectedMunicipioUf ] = useState<string | undefined>(undefined);
-  const [selectedMunicipioRegiao, setSelectedMunicipioRegiao ] = useState<string | undefined>(undefined);
-  const [selectedMunicipioMicrorregiao, setSelectedMunicipioMicrorregiao ] = useState<string | undefined>(undefined);
-  const [selectedMunicipioMesorregiao, setSelectedMunicipioMesorregiao ] = useState<string | undefined>(undefined);
+	const filteredCities =
+		query === ''
+			? municipios
+			: municipios.filter((municipios) =>
+        municipios.nome
+					.toLowerCase()
+					.replace(/\s+/g, '')
+					.includes(query.toLowerCase().replace(/\s+/g, ''))
+			)
 
-  const { municipios } = useMunicipios({
-    uf
-  });
+	useEffect(() => {
+		if (status !== "fulfilled") setSelectedMunicipio({} as IMunicipios)
+	}, [status])
 
-  const municipioOptions = municipios.map((municipio) => ({
-    value: municipio.id,
-    label: municipio.nome,
-    uf: municipio.microrregiao.mesorregiao.UF.sigla,
-    regiao: municipio.microrregiao.mesorregiao.UF.regiao,
-    microrregiao: municipio.microrregiao.nome,
-    mesorregiao: municipio.microrregiao.mesorregiao.nome
-  }));
-
-  const handleMunicipioUpdate = (
-    event: any
-  ) => {
-    // Setando informações do município selecionado
-    const municipioId = Number(event.value);
-    setSelectedMunicipioId(municipioId);
-    const municipioNome = String(event.label);
-    setSelectedMunicipioNome(municipioNome);
-    const municipioUf = String(event.uf);
-    setSelectedMunicipioUf(municipioUf);
-    const municipioRegiao = String(event.regiao.nome);
-    setSelectedMunicipioRegiao(municipioRegiao);
-    const municipioMicrorregiao = String(event.microrregiao);
-    setSelectedMunicipioMicrorregiao(municipioMicrorregiao);
-    const municipioMesorregiao = String(event.mesorregiao);
-    setSelectedMunicipioMesorregiao(municipioMesorregiao);
-  };
+	function handleSelectedMunicipio(item: IMunicipios) {
+		const selectedMunicipio = item.id
+		setSelectedMunicipio(item)
+    	dispatch(infoFetch(selectedMunicipio))
+	}
 
   return (
     <div>
       <Select
-      options={municipioOptions}
-      placeholder="Selecione um município"
-      onChange={handleMunicipioUpdate as any}
-    />  
-
-    {selectedMunicipioId && <InfoTable {...{selectedMunicipioId, selectedMunicipioNome, selectedMunicipioUf, selectedMunicipioRegiao, selectedMunicipioMicrorregiao, selectedMunicipioMesorregiao}} />}
-    </div>
+	  	isDisabled={status !== "fulfilled"}
+        options={filteredCities}
+        getOptionLabel={(option) => option.nome}
+        getOptionValue={(option) => option.id}
+        onChange={(item) => handleSelectedMunicipio(item as IMunicipios)}
+        placeholder="Selecione um município"
+      />
+    </div>   
   );
 };
