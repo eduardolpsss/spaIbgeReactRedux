@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import IBGE_API from "../../api/IBGE_API";
+import axios from "axios";
 import type { IEstados } from "../../types";
 
 interface EstadoSliceType {
@@ -16,7 +16,7 @@ export const estadosFetch = createAsyncThunk(
 	"estados/estadosFetch",
 	async () => {
 		try {
-			const response = await IBGE_API.get('estados');
+			const response = await axios.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
 			if (response.status === 200) {
 				const data = await response.data as IEstados[];
 				return data;
