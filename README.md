@@ -1,5 +1,5 @@
 # spaIbgeReactRedux
- Single page application in React + Redux using IBGE data.
+SPA utilizando React e Redux com a API disponibilizada pelo IBGE para mostrar informações de municípios do Brasil.
  
  Link: https://spaibgereactredux.netlify.app/
 
